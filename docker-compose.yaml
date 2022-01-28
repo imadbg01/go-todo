@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  go-todo:
+    container_name: go-todo
+    image: thisk8brd/go-todo:dev
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+      - "2345:2345"
+    networks:
+      - go-todo-network
+
+  go-todo-db:
+    container_name: go-todo-db
+    image: postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - go-todo-network
+
+volumes:
+  postgres-db:
+
+networks:
+  go-todo-network:
+    name: go-todo-network
